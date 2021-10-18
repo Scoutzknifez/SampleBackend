@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using MySqlConnector;
 
 namespace SampleBackend.Controllers
@@ -36,7 +34,7 @@ namespace SampleBackend.Controllers
                 blogList.Add(new Blog(id, time, title, text));
             }
 
-            var returnObject = new Dictionary<string, Object>
+            var returnObject = new Dictionary<string, object>
             {
                 { "blogs", blogList }
             };
@@ -46,7 +44,7 @@ namespace SampleBackend.Controllers
 
         [HttpPost]
         [Route(API_HEADER)]
-        public async Task<IActionResult> PostBlog(InputBlog inputBlog)
+        public async Task<IActionResult> PostBlog(Blog inputBlog)
         {
             using MySqlConnection connection = new MySqlConnection(DB_CONNECTION);
             await connection.OpenAsync();
@@ -59,7 +57,7 @@ namespace SampleBackend.Controllers
             using MySqlCommand command = new MySqlCommand(commandInput, connection);
             using MySqlDataReader reader = await command.ExecuteReaderAsync();
 
-            var returnObject = new Dictionary<string, Object>
+            var returnObject = new Dictionary<string, object>
             {
                 { "result", "success" },
                 { "time", unixTimeMillis },
@@ -82,7 +80,7 @@ namespace SampleBackend.Controllers
             using MySqlCommand command = new MySqlCommand(commandInput, connection);
             using MySqlDataReader reader = await command.ExecuteReaderAsync();
 
-            var returnObject = new Dictionary<string, Object>
+            var returnObject = new Dictionary<string, object>
             {
                 { "result", "success" }
             };
@@ -92,7 +90,7 @@ namespace SampleBackend.Controllers
 
         [HttpPut]
         [Route(API_HEADER)]
-        public async Task<IActionResult> EditBlog(InputBlog editedBlog)
+        public async Task<IActionResult> EditBlog(Blog editedBlog)
         {
             using MySqlConnection connection = new MySqlConnection(DB_CONNECTION);
             await connection.OpenAsync();
@@ -102,36 +100,12 @@ namespace SampleBackend.Controllers
             using MySqlCommand command = new MySqlCommand(commandInput, connection);
             using MySqlDataReader reader = await command.ExecuteReaderAsync();
 
-            var returnObject = new Dictionary<string, Object>
+            var returnObject = new Dictionary<string, object>
             {
                 { "result", "success" }
             };
 
             return Ok(returnObject);
-        }
-    }
-
-    public class InputBlog
-    {
-        public string ID { get; set; }
-        public string Title { get; set; }
-        public string Text { get; set; }
-
-        public InputBlog()
-        {
-
-        }
-
-        public InputBlog(string id, string title, string text)
-        {
-            this.ID = id;
-            this.Title = title;
-            this.Text = text;
-        }
-
-        public override string ToString()
-        {
-            return "{\"id\":" + ID + ",\"title\":" + Title + ",\"text\":" + Text + "}";
         }
     }
 }
